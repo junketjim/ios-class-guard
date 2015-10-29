@@ -2,6 +2,7 @@
 
 
 @interface CDSymbolsGeneratorVisitor : CDVisitor
+@property (nonatomic, copy) NSString* frameworkName;
 @property (nonatomic, copy) NSArray *classFilter;
 @property (nonatomic, copy) NSArray *ignoreSymbols;
 @property (nonatomic, readonly) NSString *resultString;

@@ -479,13 +479,12 @@ static NSString *const lettersSet[maxLettersSet] = {
 #pragma mark - CDVisitor
 
 - (void)willVisitObjectiveCProcessor:(CDObjectiveCProcessor *)processor {
-    NSString *importBaseName = processor.machOFile.importBaseName;
-
-    if (importBaseName) {
+    NSString *importBaseName = processor.machOFile.importBaseName;  
+    if ( importBaseName && ![self.frameworkName isEqualToString:importBaseName] ) {
         NSLog(@"Processing external symbols from %@...", importBaseName);
         _external = YES;
     } else {
-        NSLog(@"Processing internal symbols...");
+        NSLog(@"Processing internal symbols ...");
         _external = NO;
     }
 }
@@ -529,6 +528,7 @@ static NSString *const lettersSet[maxLettersSet] = {
 - (void)willVisitCategory:(CDOCCategory *)category {
     if (_external) {
         _ignored = YES;
+        NSLog(@"Ignoring @category %@+%@", category.className, category.name);
     } else {
         NSLog(@"Obfuscating @category %@+%@", category.className, category.name);
         [_categoryNames addObject:category.name];

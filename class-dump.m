@@ -413,6 +413,17 @@ int main(int argc, char *argv[])
                         }
 
                         CDSymbolsGeneratorVisitor *visitor = [CDSymbolsGeneratorVisitor new];
+                        
+                        // Pull out the framework name if it is a dynamic framework we're obfuscating
+                        NSRegularExpression *regex = [NSRegularExpression regularExpressionWithPattern:@"((\\w+)\\.framework)$" options:NSRegularExpressionCaseInsensitive error:&error];
+                        NSString *pathToSearch = classDump.searchPathState.executablePath;
+                        NSTextCheckingResult *match = [regex firstMatchInString:pathToSearch
+                                                                        options:0
+                                                                          range:NSMakeRange(0, [pathToSearch length])];
+                        
+                        if (match && [match numberOfRanges]>1) {
+                            visitor.frameworkName = ([pathToSearch substringWithRange:[match rangeAtIndex:2]]);
+                        }
                         visitor.classDump = classDump;
                         visitor.classFilter = classFilter;
                         visitor.ignoreSymbols = ignoreSymbols;
